@@ -279,6 +279,15 @@
   {:source (merge source-defaults source)
    :destination (merge destination-defaults destination)})
 
+(defn wait-for-init [job-id]
+  (loop [n 40]
+    (async/<!! (async/timeout 500))
+    (when (nil? (:posted-to-destination-docs (build-summary job-id)))
+      (if (pos? n)
+        (recur (dec n))
+        (do (.println *err* "failed to initialize job, no records posted")
+            (System/exit 1))))))
+
 (defn -main [& args]
   (let [filepath (or (first args)
                      (clojure.java.io/file (System/getProperty "user.dir")
@@ -288,9 +297,10 @@
         job-id (create-job cfg)
         report-interval (:report-interval (:destination cfg))]
     (println "starting copy job")
+    (run-copy-job job-id cfg)
+    (wait-for-init job-id)
     (println "reporting on job progress every"
              (quot report-interval 1000) "seconds")
-    (run-copy-job job-id cfg)
     (loop []
       (async/<!! (async/timeout report-interval))
       (let [rpt (build-summary job-id)]
