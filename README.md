@@ -22,11 +22,13 @@ Job parameters are provoded by an `edn` file.
 - `source`: Job parameters for the source index, where the docs are being pulled from
   - `index`: Index to pull the docs from
   - `url`: URL of the Elasticsearch instance
+  - `auth`: optional `user:password` used for basic authentication
   - `size`: Number of docs returned by each scroll query request; default is 500. The size should be smaller for datasources that have very large documents
   - `concurrency`: Number of concurrent scroll clients - should be less than or equal to the number of Elasticsearch data nodes. Default is 4
 - `destination`: Job parameters for the destination index, where the docs from the source will be posted to
   - `index`: Index to post the docs to
   - `url`: URL of the Elasticsearch instance
+  - `auth`: optional `user:password` used for basic authentication
   - `reporting-interval`: How often to print job status in miliseconds
   - `max-count`: Max number of docs to post at a time in a batch; default is 1,000. Will post this number of docs if `max-chars` has not been reached
   - `max-chars`: Max character count to post at a time in a batch; default is 2,000,000. The default character count keeps batches at about 1 MB when encoded in UTF-8, assuming mostly ASCII characters. The memory size for each batch is about 2 MB locally encoded as UTF-16, assuming mostly ASCII characters
@@ -44,6 +46,9 @@ Job parameters are provoded by an `edn` file.
 
   ;; URL of the Elasticsearch instance
   :url "http://localhost:9200"
+  
+  ;; Basic Authentication
+  :auth "mangosmoothie:Secret_P@$$W0RD!"
 
   ;; Number of docs returned by each scroll query request
   ;; Default is 500
@@ -63,6 +68,9 @@ Job parameters are provoded by an `edn` file.
 
   ;; URL of the Elasticsearch instance
   :url "http://localhost:9200"
+  
+  ;; Basic Authentication
+  :auth "mangosmoothie:Secret_P@$$W0RD!"
 
   ;; How often to print job status in miliseconds
   ;; Default is 3000
